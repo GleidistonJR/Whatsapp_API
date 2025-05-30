@@ -1,0 +1,52 @@
+import os
+
+import requests
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
+class EvolutionAPI:
+
+    BASE_URL = os.getenv('EVO_BASE_URL')
+    INSTANCE_NAME = os.getenv('EVO_INSTANCE_NAME')
+
+    def __init__(self):
+        self.__api_key = os.getenv('AUTHENTICATION_API_KEY')
+        self.__headers = {
+            'apikey': self.__api_key,
+            'Content-Type': 'application/json'
+        }
+
+    def send_message(self, number, text):
+        payload = {
+            'number': number,
+            'text': text,
+        }
+        response = requests.post(
+            url=f'{self.BASE_URL}/message/sendText/{self.INSTANCE_NAME}',
+            headers=self.__headers,
+            json=payload,
+        )
+        return response.json()
+
+    def send_image(self, number, text, image):
+            payload = {
+                'number': number,
+                "mediatype": "image",
+                "mimetype": "image/png",
+                "caption": text,
+                "media": image,
+                "fileName": "imagem.png",
+                                      
+            }
+            
+            
+            response = requests.post(
+                url=f'{self.BASE_URL}/message/sendMedia/{self.INSTANCE_NAME}',
+                headers=self.__headers,
+                json=payload,
+            )
+            return response.json()
